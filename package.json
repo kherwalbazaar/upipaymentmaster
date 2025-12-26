@@ -6,8 +6,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "next build",
-    "dev": "http-server . -p 5173 -c-1",
-    "start": "next start"
+    "dev": "next dev",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "1.2.12",

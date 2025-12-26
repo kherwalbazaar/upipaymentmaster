@@ -34,6 +34,7 @@ const DEFAULT_PAYEE_NAME = "KHERWAL BAZAAR"
 const HISTORY_STORAGE_KEY = "kherwal_bazaar_payment_history_v1"
 
 export function BillingDashboard() {
+  const [mounted, setMounted] = useState(false)
   const [items, setItems] = useState<Item[]>([])
   const [history, setHistory] = useState<PaymentEntry[]>([])
   const [itemName, setItemName] = useState("")
@@ -42,24 +43,39 @@ export function BillingDashboard() {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false)
   const [qrCodeUrl, setQrCodeUrl] = useState("")
 
-  // Load history on mount
   useEffect(() => {
-    const saved = localStorage.getItem(HISTORY_STORAGE_KEY)
-    if (saved) {
-      try {
-        setHistory(JSON.parse(saved))
-      } catch (e) {
-        console.error("[v0] Failed to parse history", e)
+    setMounted(true)
+  }, [])
+
+  // Load history on mount (client-side only to prevent hydration mismatch)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(HISTORY_STORAGE_KEY)
+      if (saved) {
+        try {
+          setHistory(JSON.parse(saved))
+        } catch (e) {
+          console.error("[v0] Failed to parse history", e)
+        }
       }
     }
   }, [])
+
+  if (!mounted) return null
+
+  const generateId = () => {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID()
+    }
+    return `id_${Date.now()}_${Math.random().toString(16).slice(2)}`
+  }
 
   const addItem = (e: React.FormEvent) => {
     e.preventDefault()
     if (!itemPrice) return
 
     const newItem: Item = {
-      id: crypto.randomUUID(),
+      id: generateId(),
       name: itemName.trim() || "Garments",
       qty: itemQty ? Number.parseInt(itemQty) : 1,
       price: Number.parseFloat(itemPrice),
@@ -98,7 +114,7 @@ export function BillingDashboard() {
 
     const now = new Date()
     const newEntry: PaymentEntry = {
-      id: crypto.randomUUID(),
+      id: generateId(),
       createdAt: now.toISOString(),
       date: now.toLocaleDateString("en-IN"),
       time: now.toLocaleTimeString("en-IN"),
@@ -111,7 +127,10 @@ export function BillingDashboard() {
 
     const updatedHistory = [newEntry, ...history]
     setHistory(updatedHistory)
-    localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(updatedHistory))
+    
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(updatedHistory))
+    }
 
     const params = new URLSearchParams({
       pa: DEFAULT_UPI_VPA,
@@ -134,7 +153,9 @@ export function BillingDashboard() {
   const clearHistory = () => {
     if (confirm("Clear all history?")) {
       setHistory([])
-      localStorage.removeItem(HISTORY_STORAGE_KEY)
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(HISTORY_STORAGE_KEY)
+      }
     }
   }
 
@@ -149,14 +170,14 @@ export function BillingDashboard() {
 
       <div className="grid grid-cols-1 gap-0 px-0">
         {/* Quick Add Section */}
-        <Card className="bg-gradient-to-br from-pink-500/20 to-emerald-500/20 backdrop-blur-xl border-white/10 shadow-xl overflow-hidden rounded-none border-x-0 border-b-0">
+        <Card className="bg-gradient-to-br from-pink-500/20 to-emerald-500/20 backdrop-blur-xl border-white/10 shadow-xl overflow-hidden rounded-lg border-x-0 border-b-0">
           <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-emerald-500/10 pointer-events-none" />
-          <CardHeader className="relative z-10 py-2">
+          <CardHeader className="relative z-10 py-1">
             <CardTitle className="text-sm flex items-center gap-2 text-white">
               <Plus className="w-4 h-4 text-pink-400" /> Quick Add
             </CardTitle>
           </CardHeader>
-          <CardContent className="relative z-10 py-2">
+          <CardContent className="relative z-10 py-1">
             <form onSubmit={addItem} className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
               <Input
                 placeholder="Item Name (Optional)"
