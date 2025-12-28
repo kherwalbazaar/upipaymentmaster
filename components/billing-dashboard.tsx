@@ -121,7 +121,7 @@ export function BillingDashboard() {
       amount: grandTotal,
       vpa: DEFAULT_UPI_VPA,
       items: [...items],
-      status: "pending",
+      status: "completed",
       paymentMethod: "PhonePay",
     }
 
@@ -132,15 +132,9 @@ export function BillingDashboard() {
       localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(updatedHistory))
     }
 
-    // Open PhonePay app directly to payment history
-    const phonePayHistoryUrl = "phonepe://transactionhistory"
-    window.location.href = phonePayHistoryUrl
-
-    // Fallback: Close modal after a delay if app doesn't open
-    setTimeout(() => {
-      setItems([])
-      setIsQrModalOpen(false)
-    }, 2000)
+    // Clear items and close popup immediately
+    setItems([])
+    setIsQrModalOpen(false)
   }
 
   const clearHistory = () => {
@@ -397,13 +391,6 @@ export function BillingDashboard() {
                 onClick={markAsPaid}
               >
                 <CheckCircle className="w-5 h-5 mr-2" /> Confirm Payment
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full text-zinc-400 hover:text-white border border-zinc-600 py-6 text-lg rounded-lg"
-                onClick={() => setIsQrModalOpen(false)}
-              >
-                Back to Bill
               </Button>
             </div>
           </div>
