@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import ServiceWorkerRegister from "@/components/service-worker-register"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -23,12 +24,17 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/media/Icon2.jpg",
+        url: "/Icon.png",
         sizes: "512x512",
-        type: "image/jpeg",
+        type: "image/png",
+      },
+      {
+        url: "/icon-light-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
       },
     ],
-    apple: "/media/Icon2.jpg",
+    apple: "/apple-icon.png",
   },
     generator: 'v0.app'
 }
@@ -56,6 +62,7 @@ export default function RootLayout({
       </head>
       <body className={`font-sans antialiased`}>
         {children}
+        <ServiceWorkerRegister />
         <Analytics />
       </body>
     </html>

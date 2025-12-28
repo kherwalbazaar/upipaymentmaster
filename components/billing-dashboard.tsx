@@ -161,9 +161,9 @@ export function BillingDashboard() {
 
   return (
     <div className="w-full">
-      <header className="w-full flex flex-col items-center justify-center py-2 bg-gradient-to-r from-red-600 to-yellow-500 shadow-lg">
-        <h1 className="text-xl font-black tracking-tight text-white drop-shadow-md">KHERWAL BAZAAR</h1>
-        <p className="text-white/90 font-medium text-[8px] uppercase tracking-widest">
+      <header className="w-full flex flex-col items-center justify-center py-1 bg-gradient-to-r from-red-600 to-yellow-500 shadow-lg">
+        <h1 className="text-2xl font-black tracking-tight text-white drop-shadow-md">KHERWAL BAZAAR</h1>
+        <p className="text-white/90 font-medium text-[10px] uppercase tracking-widest">
           Professional Billing & Payments
         </p>
       </header>
@@ -204,7 +204,7 @@ export function BillingDashboard() {
               </div>
               <Button
                 type="submit"
-                className="bg-white text-black hover:bg-zinc-200 shadow-lg font-bold h-9 rounded-none"
+                className="bg-white text-black hover:bg-zinc-200 shadow-lg font-bold h-9 rounded-lg"
               >
                 Add to Bill
               </Button>
@@ -214,10 +214,10 @@ export function BillingDashboard() {
 
         {/* Current Bill Section */}
         <Card className="bg-zinc-900/50 backdrop-blur-xl border-white/10 shadow-2xl rounded-none border-x-0 border-t-0 border-b-0">
-          <CardHeader className="border-b border-white/5 py-2">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <CardHeader className="border-b border-white/5 py-1">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
               <CardTitle className="text-xl font-bold flex items-center gap-2 text-white">Current Bill</CardTitle>
-              <div className="flex items-center gap-3 bg-emerald-500/10 px-3 py-1.5 border border-emerald-500/20">
+              <div className="flex items-center gap-3 bg-emerald-500/10 px-2 py-1 border border-emerald-500/20">
                 <span className="text-emerald-400/70 text-[10px] font-medium uppercase tracking-wider">
                   Grand Total:
                 </span>
@@ -227,7 +227,7 @@ export function BillingDashboard() {
           </CardHeader>
           <CardContent className="p-0 w-full overflow-x-hidden">
             {items.length === 0 ? (
-              <p className="text-center text-zinc-500 py-12 italic">No items added to current bill</p>
+              <p className="text-center text-zinc-500 py-2 italic">No items added to current bill</p>
             ) : (
               <div className="w-full overflow-x-auto">
                 <Table className="w-full">
@@ -272,7 +272,7 @@ export function BillingDashboard() {
                             variant="ghost"
                             size="sm"
                             onClick={() => removeItem(item.id)}
-                            className="text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all h-7 px-2 text-xs rounded-none"
+                            className="text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all h-7 px-2 text-xs rounded"
                           >
                             <Trash2 className="w-3 h-3 mr-1" /> Delete
                           </Button>
@@ -281,10 +281,10 @@ export function BillingDashboard() {
                     ))}
                     {/* Total row like excel */}
                     <TableRow className="bg-emerald-500/5 hover:bg-emerald-500/5 font-bold">
-                      <TableCell colSpan={4} className="text-right text-white border-r border-white/5 py-4 px-2">
+                      <TableCell colSpan={4} className="text-right text-white border-r border-white/5 py-2 px-2">
                         Total Amount:
                       </TableCell>
-                      <TableCell className="text-right text-emerald-400 text-xl border-r border-white/5 py-4 px-2">
+                      <TableCell className="text-right text-emerald-400 text-xl border-r border-white/5 py-2 px-2">
                         ₹{grandTotal.toFixed(2)}
                       </TableCell>
                       <TableCell></TableCell>
@@ -294,16 +294,16 @@ export function BillingDashboard() {
               </div>
             )}
           </CardContent>
-          <CardFooter className="flex gap-2 p-3 border-t border-white/5">
+          <CardFooter className="flex gap-2 p-2 border-t border-white/5">
             <Button
-              className="flex-1 bg-white/10 hover:bg-white/20 text-white border-0 rounded-none h-9"
+              className="flex-1 bg-white/10 hover:bg-white/20 text-white border-0 rounded h-9"
               onClick={generateQr}
               disabled={items.length === 0}
             >
               <QrCode className="w-4 h-4 mr-2 text-blue-400" /> QR Pay
             </Button>
             <Button
-              className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 border-0 shadow-lg shadow-emerald-900/20 rounded-none h-9"
+              className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 border-0 shadow-lg shadow-emerald-900/20 rounded h-9"
               onClick={markAsPaid}
               disabled={items.length === 0}
             >
@@ -322,20 +322,20 @@ export function BillingDashboard() {
               variant="ghost"
               size="sm"
               onClick={clearHistory}
-              className="text-zinc-500 hover:text-white h-6 px-2 text-[10px] rounded-none"
+              className="text-zinc-500 hover:text-white h-6 px-2 text-[10px] rounded"
             >
               Clear History
             </Button>
           </CardHeader>
           <CardContent className="p-0">
             {history.length === 0 ? (
-              <p className="text-center text-zinc-500 py-8 italic">No receive activity tracked yet</p>
+              <p className="text-center text-zinc-500 py-4 italic">No receive activity tracked yet</p>
             ) : (
               <div className="space-y-1 divide-y divide-white/5 w-full overflow-x-hidden">
                 {history.map((entry) => (
                   <div
                     key={entry.id}
-                    className="flex items-center justify-between p-3 bg-black/30 hover:bg-black/40 transition-all"
+                    className="flex items-center justify-between p-2 bg-black/30 hover:bg-black/40 transition-all"
                   >
                     <div className="flex gap-3 items-center min-w-0">
                       <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
@@ -368,7 +368,7 @@ export function BillingDashboard() {
       </div>
 
       {isQrModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center w-full h-screen">
+        <div className="fixed inset-0 z-50 bg-gradient-to-tr from-blue-900 via-indigo-950 to-slate-900 flex flex-col items-center justify-center w-full h-screen">
           {/* Close Button */}
           <button
             onClick={() => setIsQrModalOpen(false)}
@@ -395,11 +395,6 @@ export function BillingDashboard() {
                 <p className="text-zinc-400 text-sm mb-2">Amount to Pay</p>
                 <p className="text-5xl font-bold text-emerald-400">₹{grandTotal.toFixed(2)}</p>
               </div>
-            </div>
-
-            {/* Payment Method Badge */}
-            <div className="bg-blue-500/20 border border-blue-500/50 px-6 py-3 rounded-lg">
-              <p className="text-blue-200 font-semibold text-lg">PhonePay Payment</p>
             </div>
 
             {/* Action Buttons */}
