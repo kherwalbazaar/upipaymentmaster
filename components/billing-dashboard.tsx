@@ -143,11 +143,18 @@ export function BillingDashboard() {
     // Open PhonePay app with the UPI payment link
     window.location.href = upiUrl
 
-    // Fallback: Close modal after a short delay if app doesn't open
+    // Open PhonePay history after a delay
     setTimeout(() => {
-      setItems([])
-      setIsQrModalOpen(false)
-    }, 1000)
+      // Try to open PhonePay history
+      const phonePayHistoryUrl = "phonepe://transactionhistory"
+      window.location.href = phonePayHistoryUrl
+      
+      // Fallback: Close modal and clear items
+      setTimeout(() => {
+        setItems([])
+        setIsQrModalOpen(false)
+      }, 2000)
+    }, 3000)
   }
 
   const clearHistory = () => {
