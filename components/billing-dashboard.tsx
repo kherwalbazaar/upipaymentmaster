@@ -121,7 +121,7 @@ export function BillingDashboard() {
       amount: grandTotal,
       vpa: DEFAULT_UPI_VPA,
       items: [...items],
-      status: "completed",
+      status: "pending",
       paymentMethod: "PhonePay",
     }
 
@@ -132,29 +132,15 @@ export function BillingDashboard() {
       localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(updatedHistory))
     }
 
-    const params = new URLSearchParams({
-      pa: DEFAULT_UPI_VPA,
-      pn: DEFAULT_PAYEE_NAME,
-      am: grandTotal.toFixed(2),
-      cu: "INR",
-    })
-    const upiUrl = `upi://pay?${params.toString()}`
+    // Open PhonePay app directly to payment history
+    const phonePayHistoryUrl = "phonepe://transactionhistory"
+    window.location.href = phonePayHistoryUrl
 
-    // Open PhonePay app with the UPI payment link
-    window.location.href = upiUrl
-
-    // Open PhonePay history after a delay
+    // Fallback: Close modal after a delay if app doesn't open
     setTimeout(() => {
-      // Try to open PhonePay history
-      const phonePayHistoryUrl = "phonepe://transactionhistory"
-      window.location.href = phonePayHistoryUrl
-      
-      // Fallback: Close modal and clear items
-      setTimeout(() => {
-        setItems([])
-        setIsQrModalOpen(false)
-      }, 2000)
-    }, 3000)
+      setItems([])
+      setIsQrModalOpen(false)
+    }, 2000)
   }
 
   const clearHistory = () => {
