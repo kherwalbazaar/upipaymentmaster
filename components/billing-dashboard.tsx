@@ -301,7 +301,7 @@ export function BillingDashboard() {
 
         {/* Recent Activity Section */}
         <Card className="bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl rounded-none border-x-0 border-t-0">
-          <CardHeader className="flex flex-row items-center justify-between py-1.5 px-4 border-b border-white/5">
+          <CardHeader className="flex flex-row items-center justify-between py-1 px-4 border-b border-white/5">
             <CardTitle className="text-sm flex items-center gap-2 text-blue-100 uppercase tracking-wider">
               <History className="w-4 h-4 text-blue-400" /> Receive Activity
             </CardTitle>
