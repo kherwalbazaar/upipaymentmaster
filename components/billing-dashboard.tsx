@@ -171,7 +171,7 @@ export function BillingDashboard() {
 
       <div className="grid grid-cols-1 gap-0 px-0">
         {/* Quick Add Section */}
-        <Card className="bg-gradient-to-br from-pink-500/20 to-emerald-500/20 backdrop-blur-xl border-white/10 shadow-xl overflow-hidden rounded-lg border-x-0 border-b-0">
+        <Card className="bg-gradient-to-br from-pink-500/20 to-emerald-500/20 backdrop-blur-xl border-white/10 shadow-xl overflow-hidden rounded-none border-x-0 border-b-0">
           <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-emerald-500/10 pointer-events-none" />
           <CardHeader className="relative z-10 py-1">
             <CardTitle className="text-sm flex items-center gap-2 text-white">
@@ -182,10 +182,10 @@ export function BillingDashboard() {
             <form className="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
               <Input
                 type="number"
-                placeholder="Price (Required)"
+                placeholder="Price"
                 value={itemPrice}
                 onChange={(e) => setItemPrice(e.target.value)}
-                className="bg-black/40 border-white/10 text-white placeholder:text-zinc-400 focus:border-emerald-500/50 h-9"
+                className="bg-black/40 border-white/10 text-white placeholder:text-zinc-400 focus:border-emerald-500/50 h-9 [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
                 required
               />
               <div className="grid grid-cols-4 gap-2">
@@ -207,22 +207,20 @@ export function BillingDashboard() {
         </Card>
 
         {/* Current Bill Section */}
-        <Card className="bg-zinc-900/50 backdrop-blur-xl border-white/10 shadow-2xl rounded-none border-x-0 border-t-0 border-b-0">
-          <CardHeader className="border-b border-white/5 py-1">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-              <CardTitle className="text-xl font-bold flex items-center gap-2 text-white">Current Bill</CardTitle>
-              <div className="flex items-center gap-3 bg-emerald-500/10 px-2 py-1 border border-emerald-500/20">
-                <span className="text-emerald-400/70 text-[10px] font-medium uppercase tracking-wider">
-                  Grand Total:
-                </span>
-                <span className="text-emerald-400 font-mono text-2xl font-bold">₹{grandTotal.toFixed(2)}</span>
+        {items.length > 0 && (
+          <Card className="bg-zinc-900/50 backdrop-blur-xl border-white/10 shadow-2xl rounded-none border-x-0 border-t-0 border-b-0">
+            <CardHeader className="border-b border-white/5 py-1">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <CardTitle className="text-xl font-bold flex items-center gap-2 text-white">Current Bill</CardTitle>
+                <div className="flex items-center gap-3 bg-emerald-500/10 px-2 py-1 border border-emerald-500/20">
+                  <span className="text-emerald-400/70 text-[10px] font-medium uppercase tracking-wider">
+                    Grand Total:
+                  </span>
+                  <span className="text-emerald-400 font-mono text-2xl font-bold">₹{grandTotal.toFixed(2)}</span>
+                </div>
               </div>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0 w-full overflow-x-hidden">
-            {items.length === 0 ? (
-              <p className="text-center text-zinc-500 py-2 italic">No items added to current bill</p>
-            ) : (
+            </CardHeader>
+            <CardContent className="p-0 w-full overflow-x-hidden">
               <div className="w-full overflow-x-auto">
                 <Table className="w-full">
                   <TableHeader className="bg-white/5">
@@ -286,29 +284,22 @@ export function BillingDashboard() {
                   </TableBody>
                 </Table>
               </div>
-            )}
-          </CardContent>
-          <CardFooter className="flex gap-2 p-2 border-t border-white/5">
-            <Button
-              className="flex-1 bg-white/10 hover:bg-white/20 text-white border-0 rounded h-9"
-              onClick={generateQr}
-              disabled={items.length === 0}
-            >
-              <QrCode className="w-4 h-4 mr-2 text-blue-400" /> QR Pay
-            </Button>
-            <Button
-              className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 border-0 shadow-lg shadow-emerald-900/20 rounded h-9"
-              onClick={markAsPaid}
-              disabled={items.length === 0}
-            >
-              <CheckCircle className="w-4 h-4 mr-2" /> Mark Paid
-            </Button>
-          </CardFooter>
-        </Card>
+            </CardContent>
+            <CardFooter className="flex justify-center p-2 border-t border-white/5">
+              <Button
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-blue-900/20 rounded h-9 w-[70%] font-bold"
+                onClick={generateQr}
+                disabled={items.length === 0}
+              >
+                <QrCode className="w-4 h-4 mr-2 text-blue-400" /> QR Pay
+              </Button>
+            </CardFooter>
+          </Card>
+        )}
 
         {/* Recent Activity Section */}
         <Card className="bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl rounded-none border-x-0 border-t-0">
-          <CardHeader className="flex flex-row items-center justify-between py-1 px-4 border-b border-white/5">
+          <CardHeader className="flex flex-row items-center justify-between py-4 px-4 border-b border-white/5 bg-zinc-800/80 backdrop-blur-sm pb-0">
             <CardTitle className="text-sm flex items-center gap-2 text-blue-100 uppercase tracking-wider">
               <History className="w-4 h-4 text-blue-400" /> Receive Activity
             </CardTitle>
@@ -316,12 +307,12 @@ export function BillingDashboard() {
               variant="ghost"
               size="sm"
               onClick={clearHistory}
-              className="text-zinc-500 hover:text-white h-6 px-2 text-[10px] rounded"
+              className="bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 border border-red-500/30 h-5 px-2 text-[10px] rounded"
             >
               Clear History
             </Button>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0 pt-0">
             {history.length === 0 ? (
               <p className="text-center text-zinc-500 py-4 italic">No receive activity tracked yet</p>
             ) : (
