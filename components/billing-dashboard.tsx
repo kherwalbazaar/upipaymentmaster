@@ -70,6 +70,20 @@ export function BillingDashboard() {
     return `id_${Date.now()}_${Math.random().toString(16).slice(2)}`
   }
 
+  const addItemWithQty = (qty: number) => {
+    if (!itemPrice) return
+
+    const newItem: Item = {
+      id: generateId(),
+      name: "Garments",
+      qty: qty,
+      price: Number.parseFloat(itemPrice),
+    }
+
+    setItems([newItem, ...items])
+    setItemPrice("")
+  }
+
   const addItem = (e: React.FormEvent) => {
     e.preventDefault()
     if (!itemPrice) return
@@ -165,36 +179,29 @@ export function BillingDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="relative z-10 py-1">
-            <form onSubmit={addItem} className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+            <form className="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
               <Input
-                placeholder="Item Name (Optional)"
-                value={itemName}
-                onChange={(e) => setItemName(e.target.value)}
-                className="bg-black/40 border-white/10 text-white placeholder:text-zinc-400 focus:border-blue-500/50 h-9"
+                type="number"
+                placeholder="Price (Required)"
+                value={itemPrice}
+                onChange={(e) => setItemPrice(e.target.value)}
+                className="bg-black/40 border-white/10 text-white placeholder:text-zinc-400 focus:border-emerald-500/50 h-9"
+                required
               />
-              <div className="grid grid-cols-2 md:grid-cols-2 gap-3">
-                <Input
-                  type="number"
-                  placeholder="Qty (Default: xxx)"
-                  value={itemQty}
-                  onChange={(e) => setItemQty(e.target.value)}
-                  className="bg-black/40 border-white/10 text-white placeholder:text-zinc-400 focus:border-blue-500/50 h-9"
-                />
-                <Input
-                  type="number"
-                  placeholder="Price (Required)"
-                  value={itemPrice}
-                  onChange={(e) => setItemPrice(e.target.value)}
-                  className="bg-black/40 border-white/10 text-white placeholder:text-zinc-400 focus:border-emerald-500/50 h-9"
-                  required
-                />
+              <div className="grid grid-cols-4 gap-2">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((qty) => (
+                  <Button
+                    key={qty}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addItemWithQty(qty)}
+                    className="bg-black/40 border-white/10 text-white hover:bg-emerald-500/20 hover:border-emerald-500/50 h-9"
+                  >
+                    {qty}
+                  </Button>
+                ))}
               </div>
-              <Button
-                type="submit"
-                className="bg-white text-black hover:bg-zinc-200 shadow-lg font-bold h-9 rounded-lg"
-              >
-                Add to Bill
-              </Button>
             </form>
           </CardContent>
         </Card>
