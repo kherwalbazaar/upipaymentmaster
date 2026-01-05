@@ -152,7 +152,7 @@ export function BillingDashboard() {
   }
 
   const clearHistory = () => {
-    if (confirm("Clear all history?")) {
+    if (typeof window !== 'undefined' && confirm("Clear all history?")) {
       setHistory([])
       if (typeof window !== 'undefined') {
         localStorage.removeItem(HISTORY_STORAGE_KEY)
