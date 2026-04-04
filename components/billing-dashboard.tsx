@@ -27,10 +27,17 @@ const firebaseConfig = {
 }
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig)
+let app = null
 let analytics = null
-if (typeof window !== 'undefined') {
-  analytics = getAnalytics(app)
+
+try {
+  if (typeof window !== 'undefined') {
+    app = initializeApp(firebaseConfig)
+    analytics = getAnalytics(app)
+  }
+} catch (error) {
+  console.error('Firebase initialization error:', error)
+  // Fallback to local state if Firebase fails
 }
 
 interface Item {
