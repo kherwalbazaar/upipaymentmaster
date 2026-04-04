@@ -10,6 +10,28 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app"
+import { getAnalytics } from "firebase/analytics"
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBednED7egAYCuZuS9UMLb_v4whAjfA9lM",
+  authDomain: "daily-sales-d8569.firebaseapp.com",
+  projectId: "daily-sales-d8569",
+  storageBucket: "daily-sales-d8569.firebasestorage.app",
+  messagingSenderId: "309713448981",
+  appId: "1:309713448981:web:79307fb8cf2217f6461e1c",
+  measurementId: "G-29EE0BJRGN"
+}
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig)
+const analytics = getAnalytics(app)
+
 interface Item {
   id: string
   name: string
