@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { Plus, Trash2, QrCode, CheckCircle, History, X } from "lucide-react"
+import { Plus, Trash2, QrCode, CheckCircle, History, X, IndianRupee, ChevronLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
@@ -41,6 +41,7 @@ export function BillingDashboard() {
   const [itemQty, setItemQty] = useState("")
   const [itemPrice, setItemPrice] = useState("")
   const [isQrModalOpen, setIsQrModalOpen] = useState(false)
+  const [isQuantityPopupOpen, setIsQuantityPopupOpen] = useState(false)
   const [qrCodeUrl, setQrCodeUrl] = useState("")
 
   useEffect(() => {
@@ -82,6 +83,18 @@ export function BillingDashboard() {
 
     setItems([newItem, ...items])
     setItemPrice("")
+  }
+
+  const handleBackspace = () => {
+    setItemPrice(prev => prev.slice(0, -1))
+  }
+
+  const handleArrowClick = () => {
+    if (!itemPrice.trim()) {
+      alert("Please enter a price first")
+      return
+    }
+    setIsQuantityPopupOpen(true)
   }
 
   const addItem = (e: React.FormEvent) => {
@@ -180,27 +193,62 @@ export function BillingDashboard() {
           </CardHeader>
           <CardContent className="relative z-10 py-1">
             <form className="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
-              <Input
-                type="number"
-                placeholder="Price"
-                value={itemPrice}
-                onChange={(e) => setItemPrice(e.target.value)}
-                className="bg-black/40 border-white/10 text-white placeholder:text-zinc-400 focus:border-emerald-500/50 h-9 [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
-                required
-              />
-              <div className="grid grid-cols-4 gap-2">
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((qty) => (
+              <div className="relative">
+                <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-5 h-5 z-10" />
+                <Input
+                  type="text"
+                  placeholder="Price"
+                  value={itemPrice}
+                  onChange={(e) => setItemPrice(e.target.value)}
+                  onArrowClick={handleArrowClick}
+                  className="!border-white !border-2 bg-black/40 text-white placeholder:text-zinc-400 focus:border-emerald-500/50 h-15 pl-12 text-4xl font-bold [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-3 gap-0">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((qty) => (
                   <Button
                     key={qty}
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => addItemWithQty(qty)}
-                    className="bg-black/40 border-white/10 text-white hover:bg-emerald-500/20 hover:border-emerald-500/50 h-9"
+                    onClick={() => setItemPrice(prev => prev + qty.toString())}
+                    className="bg-black/40 border-white/20 text-white hover:bg-emerald-500/20 hover:border-emerald-500/50 h-15 font-bold border"
+                    style={{ fontSize: '35px' }}
                   >
                     {qty}
                   </Button>
                 ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setItemPrice(prev => prev + ".")}
+                  className="bg-black/40 border-white/20 text-white hover:bg-emerald-500/20 hover:border-emerald-500/50 h-15 font-bold border"
+                  style={{ fontSize: '35px' }}
+                >
+                  .
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setItemPrice(prev => prev + "0")}
+                  className="bg-black/40 border-white/20 text-white hover:bg-emerald-500/20 hover:border-emerald-500/50 h-15 font-bold border"
+                  style={{ fontSize: '35px' }}
+                >
+                  0
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBackspace}
+                  className="bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30 hover:border-red-500/50 h-15 font-bold border"
+                  style={{ fontSize: '35px' }}
+                >
+                  ⌫
+                </Button>
               </div>
             </form>
           </CardContent>
@@ -265,8 +313,9 @@ export function BillingDashboard() {
                             size="sm"
                             onClick={() => removeItem(item.id)}
                             className="text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all h-7 px-2 text-xs rounded"
+                            aria-label="Delete item"
                           >
-                            <Trash2 className="w-3 h-3 mr-1" /> Delete
+                            <Trash2 className="w-3 h-3" />
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -358,6 +407,7 @@ export function BillingDashboard() {
           <button
             onClick={() => setIsQrModalOpen(false)}
             className="absolute top-4 right-4 z-10 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-colors"
+            aria-label="Close modal"
           >
             <X className="w-6 h-6" />
           </button>
@@ -389,6 +439,54 @@ export function BillingDashboard() {
                 onClick={markAsPaid}
               >
                 <CheckCircle className="w-5 h-5 mr-2" /> Confirm Payment
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isQuantityPopupOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center w-full h-screen">
+          {/* Close Button */}
+          <button
+            onClick={() => setIsQuantityPopupOpen(false)}
+            className="absolute top-4 right-4 z-10 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-colors"
+            aria-label="Close quantity popup"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          {/* Popup Content */}
+          <div className="bg-zinc-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4">
+            <div className="flex flex-col items-center gap-4">
+              <h3 className="text-xl font-bold text-white">Select Quantity</h3>
+              <div className="text-center">
+                <p className="text-zinc-400 text-sm mb-1">Price per item</p>
+                <p className="text-2xl font-bold text-emerald-400">₹{itemPrice}</p>
+              </div>
+
+              {/* Quantity Buttons */}
+              <div className="grid grid-cols-2 gap-3 w-full">
+                {[1, 2, 3, 4].map((qty) => (
+                  <Button
+                    key={qty}
+                    onClick={() => {
+                      addItemWithQty(qty)
+                      setIsQuantityPopupOpen(false)
+                    }}
+                    className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 h-12 text-lg font-bold rounded-lg"
+                    >
+                    {qty}
+                  </Button>
+                ))}
+              </div>
+
+              <Button
+                onClick={() => setIsQuantityPopupOpen(false)}
+                variant="outline"
+                className="w-full bg-red-500/20 hover:bg-red-500/30 text-red-400 border-red-500/30 h-10 rounded-lg"
+              >
+                Cancel
               </Button>
             </div>
           </div>
