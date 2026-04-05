@@ -404,7 +404,7 @@ export function BillingDashboard() {
                           {item.name}
                         </TableCell>
                         <TableCell className="text-center text-zinc-300 border-r border-white/5 py-2 px-2">
-                          {itemQty === "" && item.qty === 1 ? "xxx" : item.qty}
+                          {item.qty}
                         </TableCell>
                         <TableCell className="text-right text-zinc-300 border-r border-white/5 py-2 px-2">
                           ₹{item.price.toFixed(2)}
