@@ -455,37 +455,48 @@ export function BillingDashboard() {
             {history.length === 0 ? (
               <p className="text-center text-zinc-500 py-4 italic">No receive activity tracked yet</p>
             ) : (
-              <div className="space-y-1 divide-y divide-white/5 w-full overflow-x-hidden">
-                {history.map((entry) => (
-                  <div
-                    key={entry.id}
-                    className="flex items-center justify-between p-2 bg-black/30 hover:bg-black/40 transition-all"
+              <>
+                <div className="space-y-1 divide-y divide-white/5 w-full overflow-x-hidden">
+                  {history.slice(0, 5).map((entry) => (
+                    <div
+                      key={entry.id}
+                      className="flex items-center justify-between p-2 bg-black/30 hover:bg-black/40 transition-all"
+                    >
+                      <div className="flex gap-3 items-center min-w-0">
+                        <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                          <CheckCircle className="w-4 h-4 text-emerald-400" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-xs font-bold text-white flex items-center gap-2">
+                            {entry.paymentMethod} Payment
+                            <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[9px] h-4 px-1 uppercase tracking-tighter font-medium">
+                              Verified
+                            </Badge>
+                          </div>
+                          <div className="text-[9px] text-zinc-500 font-mono">
+                            {entry.date} {entry.time} • {entry.id.slice(0, 6).toUpperCase()}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0 ml-4">
+                        <div className="text-emerald-400 font-bold text-base leading-none">
+                          ₹{entry.amount.toFixed(2)}
+                        </div>
+                        <div className="text-[9px] text-zinc-500 uppercase font-medium mt-0.5">{entry.paymentMethod}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* See All Button */}
+                <div className="p-3 border-t border-white/5">
+                  <Button
+                    onClick={() => window.location.href = '/transactions'}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-blue-900/20 rounded h-10 font-bold"
                   >
-                    <div className="flex gap-3 items-center min-w-0">
-                      <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
-                        <CheckCircle className="w-4 h-4 text-emerald-400" />
-                      </div>
-                      <div className="min-w-0">
-                        <div className="text-xs font-bold text-white flex items-center gap-2">
-                          {entry.paymentMethod} Payment
-                          <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[9px] h-4 px-1 uppercase tracking-tighter font-medium">
-                            Verified
-                          </Badge>
-                        </div>
-                        <div className="text-[9px] text-zinc-500 font-mono">
-                          {entry.date} {entry.time} • {entry.id.slice(0, 6).toUpperCase()}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right shrink-0 ml-4">
-                      <div className="text-emerald-400 font-bold text-base leading-none">
-                        ₹{entry.amount.toFixed(2)}
-                      </div>
-                      <div className="text-[9px] text-zinc-500 uppercase font-medium mt-0.5">{entry.paymentMethod}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                    <History className="w-4 h-4 mr-2" /> See All Transactions ({history.length})
+                  </Button>
+                </div>
+              </>
             )}
           </CardContent>
         </Card>
