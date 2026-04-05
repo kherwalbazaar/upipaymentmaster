@@ -56,7 +56,7 @@ export default function AllTransactionsPage() {
   if (!mounted) {
     return (
       <div className="w-full">
-        <header className="w-full flex flex-col items-center justify-center py-1 bg-gradient-to-r from-red-600 to-yellow-500 shadow-lg">
+        <header className="w-full flex flex-col items-center justify-center py-2 bg-gradient-to-r from-red-600 to-yellow-500 shadow-lg">
           <h1 className="text-2xl font-black tracking-tight text-white drop-shadow-md">KHERWAL BAZAAR</h1>
           <p className="text-white/90 font-medium text-[10px] uppercase tracking-widest">
             Professional Billing & Payments
@@ -79,7 +79,7 @@ export default function AllTransactionsPage() {
   return (
     <div className="w-full min-h-screen bg-zinc-950">
       {/* Header */}
-      <header className="w-full flex flex-col items-center justify-center py-1 bg-gradient-to-r from-red-600 to-yellow-500 shadow-lg">
+      <header className="w-full flex flex-col items-center justify-center py-2 bg-gradient-to-r from-red-600 to-yellow-500 shadow-lg">
         <h1 className="text-2xl font-black tracking-tight text-white drop-shadow-md">KHERWAL BAZAAR</h1>
         <p className="text-white/90 font-medium text-[10px] uppercase tracking-widest">
           Professional Billing & Payments
