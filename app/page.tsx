@@ -1,9 +1,9 @@
-import TestComponent from "@/components/test-component"
+import { BillingDashboard } from "@/components/billing-dashboard"
 
 export default function Page() {
   return (
     <main>
-      <TestComponent />
+      <BillingDashboard />
     </main>
   )
 }
