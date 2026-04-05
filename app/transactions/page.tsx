@@ -192,7 +192,7 @@ export default function AllTransactionsPage() {
                     onClick={() => deleteTransaction(entry.id)}
                     variant="ghost"
                     size="sm"
-                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
                     aria-label="Delete transaction"
                   >
                     <Trash2 className="w-4 h-4" />
