@@ -43,6 +43,7 @@ export function BillingDashboard() {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false)
   const [isQuantityPopupOpen, setIsQuantityPopupOpen] = useState(false)
   const [qrCodeUrl, setQrCodeUrl] = useState("")
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -51,18 +52,47 @@ export function BillingDashboard() {
   // Load history on mount (client-side only to prevent hydration mismatch)
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem(HISTORY_STORAGE_KEY)
-      if (saved) {
-        try {
+      try {
+        const saved = localStorage.getItem(HISTORY_STORAGE_KEY)
+        if (saved) {
           setHistory(JSON.parse(saved))
-        } catch (e) {
-          console.error("[v0] Failed to parse history", e)
         }
+      } catch (e) {
+        console.error("[v0] Failed to parse history", e)
+        setError("Failed to load history")
       }
     }
   }, [])
 
-  if (!mounted) return null
+  // Show loading state during hydration
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400 mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state if something went wrong
+  if (error) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
+        <div className="text-center">
+          <h2 className="text-red-400 text-xl font-bold mb-2">Error</h2>
+          <p className="text-zinc-400 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded"
+          >
+            Reload Page
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   const generateId = () => {
     if (typeof crypto !== 'undefined' && crypto.randomUUID) {

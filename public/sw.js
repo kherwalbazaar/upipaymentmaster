@@ -1,30 +1,36 @@
-const CACHE_NAME = "upi-pymt-v1";
+const CACHE_NAME = "upi-pymt-v2";
 const urlsToCache = [
   "/",
-  "/manifest.webmanifest",
-  "/Icon.png",
-  "/apple-icon.png",
-  "/icon-light-32x32.png",
-  "/icon-dark-32x32.png",
-  "/icon.svg"
+  "/manifest.webmanifest"
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
+      console.log('Opened cache');
       return cache.addAll(urlsToCache);
     })
   );
+  // Force activation immediately
+  self.skipWaiting();
 });
 
 self.addEventListener("fetch", (event) => {
+  // Network-first strategy for better reliability
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
+    fetch(event.request)
+      .then((response) => {
+        // Clone the response and cache it
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseToCache);
+        });
         return response;
-      }
-      return fetch(event.request);
-    })
+      })
+      .catch(() => {
+        // If network fails, try cache
+        return caches.match(event.request);
+      })
   );
 });
 
@@ -34,10 +40,14 @@ self.addEventListener("activate", (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
+    }).then(() => {
+      // Take control of all clients immediately
+      return self.clients.claim();
     })
   );
 });
