@@ -1,9 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ChevronLeft, CheckCircle, History } from "lucide-react"
+import { ChevronLeft, CheckCircle, History, Trash2, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 interface Item {
   id: string
@@ -29,6 +37,7 @@ const HISTORY_STORAGE_KEY = "kherwal_bazaar_payment_history_v1"
 export default function AllTransactionsPage() {
   const [history, setHistory] = useState<PaymentEntry[]>([])
   const [mounted, setMounted] = useState(false)
+  const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -52,6 +61,24 @@ export default function AllTransactionsPage() {
   const todaysSale = history
     .filter(entry => entry.date === today)
     .reduce((sum, entry) => sum + entry.amount, 0)
+
+  // Delete individual transaction
+  const deleteTransaction = (id: string) => {
+    const updatedHistory = history.filter(entry => entry.id !== id)
+    setHistory(updatedHistory)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(updatedHistory))
+    }
+  }
+
+  // Clear all transactions
+  const clearAllTransactions = () => {
+    setHistory([])
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(HISTORY_STORAGE_KEY)
+    }
+    setIsClearConfirmOpen(false)
+  }
 
   if (!mounted) {
     return (
@@ -98,8 +125,8 @@ export default function AllTransactionsPage() {
         </div>
       </div>
 
-      {/* Back Button */}
-      <div className="p-3 border-b border-white/10">
+      {/* Back Button and Clear All */}
+      <div className="p-3 border-b border-white/10 flex items-center justify-between gap-2">
         <Button
           onClick={() => window.history.back()}
           variant="ghost"
@@ -107,6 +134,15 @@ export default function AllTransactionsPage() {
         >
           <ChevronLeft className="w-5 h-5 mr-1" /> Back
         </Button>
+        {history.length > 0 && (
+          <Button
+            onClick={() => setIsClearConfirmOpen(true)}
+            variant="ghost"
+            className="text-red-400 hover:bg-red-500/10 px-2 h-8 text-xs"
+          >
+            <Trash2 className="w-4 h-4 mr-1" /> Clear All
+          </Button>
+        )}
       </div>
 
       {/* Transaction List */}
@@ -124,7 +160,7 @@ export default function AllTransactionsPage() {
             {history.map((entry) => (
               <div
                 key={entry.id}
-                className="flex items-center justify-between p-3 bg-zinc-900/50 border border-white/10 rounded-lg"
+                className="flex items-center justify-between p-3 bg-zinc-900/50 border border-white/10 rounded-lg group"
               >
                 <div className="flex gap-3 items-center min-w-0 flex-1">
                   <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
@@ -145,17 +181,57 @@ export default function AllTransactionsPage() {
                     </div>
                   </div>
                 </div>
-                <div className="text-right shrink-0 ml-3">
-                  <div className="text-emerald-400 font-bold text-lg leading-none">
-                    ₹{entry.amount.toFixed(2)}
+                <div className="flex items-center gap-2 shrink-0 ml-3">
+                  <div className="text-right">
+                    <div className="text-emerald-400 font-bold text-lg leading-none">
+                      ₹{entry.amount.toFixed(2)}
+                    </div>
+                    <div className="text-[9px] text-zinc-500 uppercase font-medium mt-1">{entry.paymentMethod}</div>
                   </div>
-                  <div className="text-[9px] text-zinc-500 uppercase font-medium mt-1">{entry.paymentMethod}</div>
+                  <Button
+                    onClick={() => deleteTransaction(entry.id)}
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                    aria-label="Delete transaction"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* Clear All Confirmation Dialog */}
+      <Dialog open={isClearConfirmOpen} onOpenChange={setIsClearConfirmOpen}>
+        <DialogContent className="bg-zinc-900 border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-400">
+              <AlertTriangle className="w-5 h-5" /> Clear All Transactions?
+            </DialogTitle>
+            <DialogDescription className="text-zinc-400">
+              This action cannot be undone. This will permanently delete all {history.length} transaction(s) from your device.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setIsClearConfirmOpen(false)}
+              className="bg-zinc-800 hover:bg-zinc-700 text-white border-white/10"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={clearAllTransactions}
+              className="bg-red-600 hover:bg-red-500 text-white"
+            >
+              <Trash2 className="w-4 h-4 mr-2" /> Clear All
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
