@@ -202,6 +202,33 @@ export function BillingDashboard() {
     setIsQrModalOpen(false)
   }
 
+  const markAsCashPaid = () => {
+    if (items.length === 0) return
+
+    const now = new Date()
+    const newEntry: PaymentEntry = {
+      id: generateId(),
+      createdAt: now.toISOString(),
+      date: now.toLocaleDateString("en-IN"),
+      time: now.toLocaleTimeString("en-IN"),
+      amount: grandTotal,
+      vpa: "CASH",
+      items: [...items],
+      status: "completed",
+      paymentMethod: "Cash",
+    }
+
+    const updatedHistory = [newEntry, ...history]
+    setHistory(updatedHistory)
+    
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(updatedHistory))
+    }
+
+    // Clear items immediately
+    setItems([])
+  }
+
   const clearHistory = () => {
     if (typeof window !== 'undefined' && confirm("Clear all history?")) {
       setHistory([])
@@ -356,9 +383,16 @@ export function BillingDashboard() {
                 </Table>
               </div>
             </CardContent>
-            <CardFooter className="flex justify-center p-2 border-t border-white/5">
+            <CardFooter className="flex gap-2 p-2 border-t border-white/5">
               <Button
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-blue-900/20 rounded h-9 w-[70%] font-bold"
+                className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white border-0 shadow-lg shadow-emerald-900/20 rounded h-9 font-bold"
+                onClick={markAsCashPaid}
+                disabled={items.length === 0}
+              >
+                <IndianRupee className="w-4 h-4 mr-2" /> Cash Pay
+              </Button>
+              <Button
+                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-blue-900/20 rounded h-9 font-bold"
                 onClick={generateQr}
                 disabled={items.length === 0}
               >
@@ -400,9 +434,15 @@ export function BillingDashboard() {
                       <div className="min-w-0">
                         <div className="text-xs font-bold text-white flex items-center gap-2">
                           {entry.paymentMethod} Payment
-                          <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[9px] h-4 px-1 uppercase tracking-tighter font-medium">
-                            Verified
-                          </Badge>
+                          {entry.paymentMethod === "Cash" ? (
+                            <Badge className="bg-yellow-500/10 text-yellow-400 border-yellow-500/20 text-[9px] h-4 px-1 uppercase tracking-tighter font-medium">
+                              Cash
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[9px] h-4 px-1 uppercase tracking-tighter font-medium">
+                              Verified
+                            </Badge>
+                          )}
                         </div>
                         <div className="text-[9px] text-zinc-500 font-mono">
                           {entry.date} {entry.time} • {entry.id.slice(0, 6).toUpperCase()}
