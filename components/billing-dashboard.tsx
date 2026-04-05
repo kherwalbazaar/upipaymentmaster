@@ -64,13 +64,21 @@ export function BillingDashboard() {
     }
   }, [])
 
-  // Show loading state during hydration
+  // Show loading state during hydration - use same structure as final render
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400 mx-auto mb-4"></div>
-          <p>Loading...</p>
+      <div className="w-full">
+        <header className="w-full flex flex-col items-center justify-center py-1 bg-gradient-to-r from-red-600 to-yellow-500 shadow-lg">
+          <h1 className="text-2xl font-black tracking-tight text-white drop-shadow-md">KHERWAL BAZAAR</h1>
+          <p className="text-white/90 font-medium text-[10px] uppercase tracking-widest">
+            Professional Billing & Payments
+          </p>
+        </header>
+        <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+          <div className="text-white text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400 mx-auto mb-4"></div>
+            <p>Loading...</p>
+          </div>
         </div>
       </div>
     )
@@ -216,11 +224,6 @@ export function BillingDashboard() {
         {/* Quick Add Section */}
         <Card className="bg-gradient-to-br from-pink-500/20 to-emerald-500/20 backdrop-blur-xl border-white/10 shadow-xl overflow-hidden rounded-none border-x-0 border-b-0">
           <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-emerald-500/10 pointer-events-none" />
-          <CardHeader className="relative z-10 py-1">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
-              <Plus className="w-4 h-4 text-pink-400" /> Quick Add
-            </CardTitle>
-          </CardHeader>
           <CardContent className="relative z-10 py-1">
             <form className="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
               <div className="relative">
@@ -287,17 +290,6 @@ export function BillingDashboard() {
         {/* Current Bill Section */}
         {items.length > 0 && (
           <Card className="bg-zinc-900/50 backdrop-blur-xl border-white/10 shadow-2xl rounded-none border-x-0 border-t-0 border-b-0">
-            <CardHeader className="border-b border-white/5 py-1">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-                <CardTitle className="text-xl font-bold flex items-center gap-2 text-white">Current Bill</CardTitle>
-                <div className="flex items-center gap-3 bg-emerald-500/10 px-2 py-1 border border-emerald-500/20">
-                  <span className="text-emerald-400/70 text-[10px] font-medium uppercase tracking-wider">
-                    Grand Total:
-                  </span>
-                  <span className="text-emerald-400 font-mono text-2xl font-bold">₹{grandTotal.toFixed(2)}</span>
-                </div>
-              </div>
-            </CardHeader>
             <CardContent className="p-0 w-full overflow-x-hidden">
               <div className="w-full overflow-x-auto">
                 <Table className="w-full">
