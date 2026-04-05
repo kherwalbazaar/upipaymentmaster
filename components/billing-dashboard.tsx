@@ -468,15 +468,9 @@ export function BillingDashboard() {
                       <div className="min-w-0">
                         <div className="text-xs font-bold text-white flex items-center gap-2">
                           {entry.paymentMethod} Payment
-                          {entry.paymentMethod === "Cash" ? (
-                            <Badge className="bg-yellow-500/10 text-yellow-400 border-yellow-500/20 text-[9px] h-4 px-1 uppercase tracking-tighter font-medium">
-                              Cash
-                            </Badge>
-                          ) : (
-                            <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[9px] h-4 px-1 uppercase tracking-tighter font-medium">
-                              Verified
-                            </Badge>
-                          )}
+                          <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[9px] h-4 px-1 uppercase tracking-tighter font-medium">
+                            Verified
+                          </Badge>
                         </div>
                         <div className="text-[9px] text-zinc-500 font-mono">
                           {entry.date} {entry.time} • {entry.id.slice(0, 6).toUpperCase()}
