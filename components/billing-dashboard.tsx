@@ -3,12 +3,20 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { Plus, Trash2, QrCode, CheckCircle, History, X, IndianRupee, ChevronLeft } from "lucide-react"
+import { Plus, Trash2, QrCode, CheckCircle, History, X, IndianRupee, ChevronLeft, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 interface Item {
   id: string
@@ -44,6 +52,9 @@ export function BillingDashboard() {
   const [isQuantityPopupOpen, setIsQuantityPopupOpen] = useState(false)
   const [qrCodeUrl, setQrCodeUrl] = useState("")
   const [error, setError] = useState<string | null>(null)
+  const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false)
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false)
+  const [successMessage, setSuccessMessage] = useState("")
 
   useEffect(() => {
     setMounted(true)
@@ -222,6 +233,10 @@ export function BillingDashboard() {
     // Clear items and close popup immediately
     setItems([])
     setIsQrModalOpen(false)
+    
+    // Show success message
+    setSuccessMessage(`Payment of ₹${grandTotal.toFixed(2)} recorded successfully!`)
+    setIsSuccessOpen(true)
   }
 
   const markAsCashPaid = () => {
@@ -249,15 +264,22 @@ export function BillingDashboard() {
 
     // Clear items immediately
     setItems([])
+    
+    // Show success message
+    setSuccessMessage(`Cash payment of ₹${grandTotal.toFixed(2)} recorded successfully!`)
+    setIsSuccessOpen(true)
   }
 
   const clearHistory = () => {
-    if (typeof window !== 'undefined' && confirm("Clear all history?")) {
-      setHistory([])
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem(HISTORY_STORAGE_KEY)
-      }
+    setIsClearConfirmOpen(true)
+  }
+
+  const confirmClearHistory = () => {
+    setHistory([])
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(HISTORY_STORAGE_KEY)
     }
+    setIsClearConfirmOpen(false)
   }
 
   return (
@@ -593,6 +615,62 @@ export function BillingDashboard() {
           </div>
         </div>
       )}
+
+      {/* Clear History Confirmation Dialog */}
+      <Dialog open={isClearConfirmOpen} onOpenChange={setIsClearConfirmOpen}>
+        <DialogContent className="bg-zinc-900 border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-400">
+              <AlertTriangle className="w-5 h-5" /> Clear All History?
+            </DialogTitle>
+            <DialogDescription className="text-zinc-400">
+              This action cannot be undone. This will permanently delete all {history.length} transaction(s) from your device.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setIsClearConfirmOpen(false)}
+              className="bg-zinc-800 hover:bg-zinc-700 text-white border-white/10"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmClearHistory}
+              className="bg-red-600 hover:bg-red-500 text-white"
+            >
+              <Trash2 className="w-4 h-4 mr-2" /> Clear All
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Success Dialog */}
+      <Dialog open={isSuccessOpen} onOpenChange={setIsSuccessOpen}>
+        <DialogContent className="bg-zinc-900 border-white/10 text-white">
+          <DialogHeader>
+            <div className="flex items-center justify-center mb-2">
+              <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                <CheckCircle className="w-10 h-10 text-emerald-400" />
+              </div>
+            </div>
+            <DialogTitle className="text-center text-emerald-400 text-xl">
+              Payment Successful!
+            </DialogTitle>
+            <DialogDescription className="text-center text-zinc-300 mt-2">
+              {successMessage}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={() => setIsSuccessOpen(false)}
+              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white"
+            >
+              OK
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
