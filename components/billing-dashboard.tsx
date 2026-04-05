@@ -74,6 +74,19 @@ export function BillingDashboard() {
             Professional Billing & Payments
           </p>
         </header>
+
+        {/* Summary Section */}
+        <div className="grid grid-cols-2 gap-0 border-b border-white/10">
+          <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 backdrop-blur-xl p-3 text-center border-r border-white/10">
+            <p className="text-emerald-400/70 text-[10px] font-medium uppercase tracking-wider mb-1">Grand Total</p>
+            <p className="text-emerald-400 font-mono text-2xl font-bold">₹0.00</p>
+          </div>
+          <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 backdrop-blur-xl p-3 text-center">
+            <p className="text-blue-400/70 text-[10px] font-medium uppercase tracking-wider mb-1">Today's Sale</p>
+            <p className="text-blue-400 font-mono text-2xl font-bold">₹0.00</p>
+          </div>
+        </div>
+
         <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
           <div className="text-white text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400 mx-auto mb-4"></div>
@@ -157,6 +170,15 @@ export function BillingDashboard() {
   }
 
   const grandTotal = items.reduce((sum, item) => sum + item.qty * item.price, 0)
+
+  // Calculate today's total sales
+  const today = new Date().toLocaleDateString("en-IN")
+  const todaysSale = history
+    .filter(entry => entry.date === today)
+    .reduce((sum, entry) => sum + entry.amount, 0)
+
+  // Calculate grand total (all time sales)
+  const allTimeTotal = history.reduce((sum, entry) => sum + entry.amount, 0)
 
   const generateQr = () => {
     if (grandTotal <= 0) return
@@ -246,6 +268,18 @@ export function BillingDashboard() {
           Professional Billing & Payments
         </p>
       </header>
+
+      {/* Summary Section */}
+      <div className="grid grid-cols-2 gap-0 border-b border-white/10">
+        <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 backdrop-blur-xl p-3 text-center border-r border-white/10">
+          <p className="text-emerald-400/70 text-[10px] font-medium uppercase tracking-wider mb-1">Grand Total</p>
+          <p className="text-emerald-400 font-mono text-2xl font-bold">₹{allTimeTotal.toFixed(2)}</p>
+        </div>
+        <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 backdrop-blur-xl p-3 text-center">
+          <p className="text-blue-400/70 text-[10px] font-medium uppercase tracking-wider mb-1">Today's Sale</p>
+          <p className="text-blue-400 font-mono text-2xl font-bold">₹{todaysSale.toFixed(2)}</p>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 gap-0 px-0">
         {/* Quick Add Section */}
@@ -385,18 +419,18 @@ export function BillingDashboard() {
             </CardContent>
             <CardFooter className="flex gap-2 p-2 border-t border-white/5">
               <Button
-                className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white border-0 shadow-lg shadow-emerald-900/20 rounded h-9 font-bold"
+                className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white border-0 shadow-lg shadow-emerald-900/20 rounded h-14 font-bold text-lg"
                 onClick={markAsCashPaid}
                 disabled={items.length === 0}
               >
-                <IndianRupee className="w-4 h-4 mr-2" /> Cash Pay
+                <IndianRupee className="w-5 h-5 mr-2" /> Cash Pay
               </Button>
               <Button
-                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-blue-900/20 rounded h-9 font-bold"
+                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-blue-900/20 rounded h-14 font-bold text-lg"
                 onClick={generateQr}
                 disabled={items.length === 0}
               >
-                <QrCode className="w-4 h-4 mr-2 text-blue-400" /> QR Pay
+                <QrCode className="w-5 h-5 mr-2 text-blue-400" /> QR Pay
               </Button>
             </CardFooter>
           </Card>
