@@ -1,7 +1,6 @@
 import * as React from 'react'
 
 import { cn } from '@/lib/utils'
-import { ArrowRight } from 'lucide-react'
 
 interface InputProps extends React.ComponentProps<'input'> {
   onArrowClick?: () => void
@@ -20,16 +19,19 @@ function Input({ className, type, onArrowClick, ...props }: InputProps) {
           'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
           'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
           '!border-white !border-2',
-          showArrow ? 'pr-10' : 'px-3',
+          showArrow ? 'pr-32' : 'px-3',
           className,
         )}
         {...props}
       />
       {showArrow && (
-        <ArrowRight
-          className="absolute right-0.5 top-1/2 h-15 w-15 -translate-y-1/2 cursor-pointer text-zinc-900 hover:text-zinc-700 bg-white rounded-tr-md rounded-br-md px-1 font-bold"
+        <button
+          type="button"
           onClick={onArrowClick}
-        />
+          className="absolute right-[2px] top-[2px] bottom-[2px] cursor-pointer bg-white hover:bg-zinc-100 text-zinc-950 rounded-tr-md rounded-br-md px-3 font-black text-sm whitespace-nowrap transition-colors flex items-center justify-center"
+        >
+          ADD ITEM ➜
+        </button>
       )}
     </div>
   )

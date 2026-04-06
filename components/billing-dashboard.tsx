@@ -126,6 +126,14 @@ export function BillingDashboard() {
     )
   }
 
+  // Vibration function for mobile feedback
+  const triggerVibration = () => {
+    if ('vibrate' in navigator) {
+      // Vibrate for 200ms - gentle feedback for item addition
+      navigator.vibrate(200)
+    }
+  }
+
   const generateId = () => {
     if (typeof crypto !== 'undefined' && crypto.randomUUID) {
       return crypto.randomUUID()
@@ -135,6 +143,9 @@ export function BillingDashboard() {
 
   const addItemWithQty = (qty: number) => {
     if (!itemPrice) return
+
+    // Trigger vibration for item addition with quantity
+    triggerVibration()
 
     const newItem: Item = {
       id: generateId(),
@@ -162,6 +173,9 @@ export function BillingDashboard() {
   const addItem = (e: React.FormEvent) => {
     e.preventDefault()
     if (!itemPrice) return
+
+    // Trigger vibration for item addition
+    triggerVibration()
 
     const newItem: Item = {
       id: generateId(),
